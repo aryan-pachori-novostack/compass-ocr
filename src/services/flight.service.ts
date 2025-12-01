@@ -55,8 +55,8 @@ function validate_flight_ticket(text: string): boolean {
 /**
  * Extract flight information from OCR text with improved accuracy
  */
-function extract_flight_data(text: string): FlightOCRResult['data'] {
-  const data: FlightOCRResult['data'] = {};
+function extract_flight_data(text: string): NonNullable<FlightOCRResult['data']> {
+  const data: NonNullable<FlightOCRResult['data']> = {};
   
   // Extract PNR/Booking Reference (6 alphanumeric characters, often after "PNR" or "Booking Reference")
   const pnr_patterns = [
@@ -252,10 +252,13 @@ export async function process_flight_ocr(file_url: string): Promise<FlightOCRRes
     });
     
     try {
-      // Perform OCR with better settings
-      const { data: { text } } = await worker.recognize(file_buffer, {
-        config: '--tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
+      // Set Tesseract parameters for better OCR accuracy
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
       });
+      
+      // Perform OCR
+      const { data: { text } } = await worker.recognize(file_buffer);
       
       logger.info(`Flight OCR extracted ${text.length} characters`);
 

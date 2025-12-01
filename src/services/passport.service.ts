@@ -89,7 +89,7 @@ export async function process_passport_ocr(
         throw new Error(`Gridlines API error: ${response.status} - ${error_text}`);
       }
 
-      const result = await response.json();
+      const result: any = await response.json();
 
       // Extract relevant data
       const extracted_data: PassportOCRResult['data'] = {
@@ -100,7 +100,7 @@ export async function process_passport_ocr(
         nationality: result.nationality || result.country,
         place_of_birth: result.place_of_birth,
         gender: result.gender || result.sex,
-        ...result,
+        ...(result as Record<string, any>),
       };
 
       logger.info('Passport OCR completed successfully');

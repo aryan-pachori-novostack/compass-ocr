@@ -54,8 +54,8 @@ function validate_hotel_booking(text: string): boolean {
 /**
  * Extract hotel information from OCR text with improved accuracy
  */
-function extract_hotel_data(text: string): HotelOCRResult['data'] {
-  const data: HotelOCRResult['data'] = {};
+function extract_hotel_data(text: string): NonNullable<HotelOCRResult['data']> {
+  const data: NonNullable<HotelOCRResult['data']> = {};
   
   // Extract hotel name (look for patterns like "6 Bedroom Villa. Dubai Hills.")
   const hotel_patterns = [
@@ -222,10 +222,13 @@ export async function process_hotel_ocr(file_url: string): Promise<HotelOCRResul
     });
     
     try {
-      // Perform OCR with better settings
-      const { data: { text } } = await worker.recognize(file_buffer, {
-        config: '--tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
+      // Set Tesseract parameters for better OCR accuracy
+      await worker.setParameters({
+        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
       });
+      
+      // Perform OCR
+      const { data: { text } } = await worker.recognize(file_buffer);
       
       logger.info(`Hotel OCR extracted ${text.length} characters`);
 
