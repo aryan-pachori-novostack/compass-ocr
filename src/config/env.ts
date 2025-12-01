@@ -1,9 +1,21 @@
 import dotenv from 'dotenv';
 
-// Suppress dotenv tips in production/CI
+// Suppress dotenv tips
 dotenv.config({
   debug: false,
 });
+
+// Suppress dotenv console output by overriding console methods temporarily
+const originalLog = console.log;
+const originalInfo = console.info;
+console.log = (...args: any[]) => {
+  if (args[0]?.includes?.('[dotenv@')) return;
+  originalLog(...args);
+};
+console.info = (...args: any[]) => {
+  if (args[0]?.includes?.('[dotenv@')) return;
+  originalInfo(...args);
+};
 
 export const env = {
   port: Number(process.env.PORT) || 8001,
