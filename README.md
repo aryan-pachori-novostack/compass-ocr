@@ -9,7 +9,7 @@ OCR microservice for processing passport, flight, and hotel tickets. This servic
 - **Hotel Ticket OCR**: Uses Tesseract.js to extract hotel booking information (hotel name, confirmation code, check-in/out dates, place)
 - **Smart Mapping**: Automatically maps flight/hotel tickets to passengers using fuzzy name matching
 - **Real-time Updates**: Publishes progress updates via Redis Pub/Sub for SSE streaming
-- **Pre-signed URL Support**: Downloads files from pre-signed S3 URLs (no AWS credentials needed)
+- **Pre-signed URL Support**: Downloads files from pre-signed S3 URLs (no AWS credentials needed in OCR service)
 
 ## Prerequisites
 
@@ -17,6 +17,8 @@ OCR microservice for processing passport, flight, and hotel tickets. This servic
 - Redis server (for pub/sub)
 - Gridlines API credentials (for passport OCR)
 - Main backend running (for webhook callbacks)
+
+**Note:** OCR service does NOT need AWS S3 credentials. It receives pre-signed URLs from the main backend.
 
 ## Setup Instructions
 
@@ -45,12 +47,6 @@ OCR_PROGRESS_CHANNEL=ocr_progress
 
 # Main Backend (for webhook callbacks)
 MAIN_BACKEND_URL=http://localhost:3000
-
-# AWS S3 (optional - only needed if using direct S3 access)
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_REGION=us-east-1
-S3_BUCKET_NAME=
 
 # Logger
 LOGGER_LEVEL=debug
@@ -278,12 +274,9 @@ compass-ocr-service/
 │   │   └── mapping.service.ts       # Map tickets to passengers
 │   ├── config/
 │   │   ├── env.ts                   # Environment configuration
-│   │   ├── redis.ts                 # Redis pub/sub
-│   │   └── s3.ts                    # S3 utilities (optional)
+│   │   └── redis.ts                 # Redis pub/sub
 │   └── utils/
-│       ├── logger.ts                # Winston logger
-│       ├── s3.ts                    # S3 download utilities
-│       └── zip_extractor.ts         # Zip file extraction (legacy)
+│       └── logger.ts                # Winston logger
 ├── index.ts                         # Application entry point
 ├── package.json
 ├── tsconfig.json
@@ -327,10 +320,10 @@ Logs are written to:
 
 ## Security
 
-- **No AWS Credentials Required**: Uses pre-signed URLs from main backend
+- **No AWS Credentials Required**: OCR service uses pre-signed URLs from main backend (no S3 credentials needed)
 - **Temporary URLs**: Pre-signed URLs expire after 1 hour
-- **No File Storage**: Files are downloaded, processed, and discarded
-- **Environment Variables**: Sensitive data stored in `.env` (not committed)
+- **No File Storage**: Files are downloaded, processed, and discarded immediately
+- **Environment Variables**: Sensitive data (Gridlines API keys) stored in `.env` (not committed)
 
 ## Troubleshooting
 

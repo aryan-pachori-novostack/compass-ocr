@@ -254,7 +254,7 @@ export async function process_flight_ocr(file_url: string): Promise<FlightOCRRes
     try {
       // Perform OCR with better settings
       const { data: { text } } = await worker.recognize(file_buffer, {
-        tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
+        config: '--tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 :/-.,\n',
       });
       
       logger.info(`Flight OCR extracted ${text.length} characters`);

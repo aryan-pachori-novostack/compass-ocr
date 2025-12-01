@@ -24,14 +24,6 @@ export const env = {
     url: process.env.MAIN_BACKEND_URL || 'http://localhost:3000',
   },
   
-  // AWS S3
-  s3: {
-    access_key_id: process.env.AWS_ACCESS_KEY_ID || '',
-    secret_access_key: process.env.AWS_SECRET_ACCESS_KEY || '',
-    region: process.env.AWS_REGION || 'us-east-1',
-    bucket_name: process.env.S3_BUCKET_NAME || '',
-  },
-  
   // Logger
   logger: {
     level: process.env.LOGGER_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug'),
