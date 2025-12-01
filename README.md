@@ -42,6 +42,9 @@ GRIDLINES_API_KEY=your_gridlines_api_key
 GRIDLINES_AUTH_TYPE=your_auth_type
 
 # Redis (for pub/sub)
+# If running on same host as Redis: redis://localhost:6379
+# If running in Docker: redis://compass-redis:6379
+# If using Docker network: redis://host.docker.internal:6379
 REDIS_URL=redis://localhost:6379
 OCR_PROGRESS_CHANNEL=ocr_progress
 

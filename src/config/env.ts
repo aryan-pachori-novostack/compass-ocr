@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 
-dotenv.config();
+// Suppress dotenv tips in production/CI
+dotenv.config({
+  debug: false,
+});
 
 export const env = {
   port: Number(process.env.PORT) || 8001,
